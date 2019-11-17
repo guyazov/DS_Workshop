@@ -7,6 +7,25 @@ df = pd.read_csv('SUMMARY.csv')
 
 # Start of getting some intuition of the data
 print(df.columns)
+# Start of fixing players missing stats
+df.loc[df['player'] == "Nene", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%"]] =\
+    ["Right", "C", "7","211","113","0.548","0.132","0.66","0.551"]
+df.loc[df['player'] == "Antoine Walker", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%"]]\
+    = ["Right", "PF", "6","203","101","0.414","0.325","0.66","0.401"]
+df.loc[df['player'] == "James Jones", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%"]]\
+    = ["Right", "SF", "49","203","98","0.401","0.401","0.84","0.426"]
+df.loc[df['player'] == "Mouhamed Sene", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%"]]\
+    = ["Right", "C", "10","211","104","0.427","","0.589","0.427"]
+df.loc[df['player'] == "Anthony Johnson", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%"]]\
+    = ["Right", "PG", "39","190","86","0.414","0.356","0.745","0.431"]
+df.loc[df['player'] == "Sasha Pavlovic", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%"]]\
+    = ["Right", "SG", "19","203","99","0.404","0.346","0.673","0.433"]
+df.loc[df['player'] == "Dajuan Wagner", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%"]]\
+    = ["Right", "SG", "6","188","90","0.366","0.321","0.770","0.385"]
+
+
+df.to_csv("Test.csv")
+# End of fixing players missing stats
 # Show right handed vs left handed
 print(df["player"].nunique())
 # Show right handed vs left handed
