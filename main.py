@@ -22,7 +22,36 @@ df.loc[df['player'] == "Sasha Pavlovic", ["ShootingHand", "Pos", "draftRank","He
     = ["Right", "SG", "19","203","99","0.404","0.346","0.673","0.433"]
 df.loc[df['player'] == "Dajuan Wagner", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%"]]\
     = ["Right", "SG", "6","188","90","0.366","0.321","0.770","0.385"]
-
+df.loc[df['player'] == "Marcus Vinicius", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%"]]\
+    = ["Right", "SF", "43","203","102","0.457","0.421","0.556","0.500"]
+df.loc[df['player'] == "Jose Juan", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%"]]\
+    = ["Right", "PG", "undrafted","178","83","0.424","0.351","0.792","0.463"]
+df.loc[df['player'] == "Slava Medvedenko", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%"]]\
+    = ["Right", "PF", "","208","113","0.450","0.154","0.740","0.453"]
+df.loc[df['player'] == "Luke Jackson", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%"]]\
+    = ["Left", "SF", "10","208","113","0.357","0.360","0.732","0.356"]
+df.loc[df['player'] == "Jeff Green", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%"]]\
+    = ["Right", "SF", "5","203","106","0.440","0.334","0.850","0.482"]
+df.loc[df['player'] == "Juan Carlos", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%"]]\
+    = ["Right", "SG", "40","190","77","0.402","0.361","0.849","0.455"]
+df.loc[df['player'] == "Luc Mbah", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%"]]\
+    = ["Right", "PF", "37","203","104","0.454","0.335","0.660","0.478"]
+df.loc[df['player'] == "Bobby Brown", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%"]]\
+    = ["Right", "PG", "undrafted","188","79","0.379","0.317","0.806","0.425"]
+df.loc[df['player'] == "Luc Richard", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%","player"]]\
+    = ["Right", "PF", "37","203","104","0.454","0.335","0.660","0.478","Luc Mbah"]
+df.loc[df['player'] == "Armon Johnson", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%"]]\
+    = ["Left", "PG", "34","190","88","0.458","0.400","0.679","0.465"]
+df.loc[df['player'] == "Pooh Jeter", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%"]]\
+    = ["Right", "PG", "undrafted","180","79","0.409","0.200","0.902","0.437"]
+df.loc[df['player'] == "Tristan Thompson", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%"]]\
+    = ["Right", "PF", "4","206","107","0.520","0.200","0.610","0.521"]
+df.loc[df['player'] == "Chris Johnson", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%"]]\
+    = ["Right", "C", "undrafted","211","95","0.562","","0.699","0.562"]
+df.loc[df['player'] == "Markieff Morris", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%"]]\
+    = ["Right", "PF", "13","203","111","0.449","0.340","0.777","0.481"]
+df.loc[df['player'] == "Metta World", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%"]]\
+    = ["Right", "SF", "16","198","117","0.414","0.339","0.715","0.447"]
 
 df.to_csv("Test.csv")
 # End of fixing players missing stats
