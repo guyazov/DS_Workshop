@@ -136,3 +136,19 @@ ax1.set_title('Average number of free throws per period. Attempted vs Successful
 legend=plt.legend((' playoffs attempted','regular attempted','playoffs successful','regular successful'), loc=6, prop={'size': 15})
 ax1.add_artist(legend)
 plt.show()
+
+
+#Weight histogram
+df['Weight'] = df['Weight'].astype(np.float)
+df2 = df.drop_duplicates(subset=['player'])
+sns.distplot(a=df2['Weight'], bins = 20, kde = False)
+plt.title('Weight Distribution')
+plt.xlabel('Weight')
+plt.ylabel('Count')
+plt.show()
+
+
+# Throws percentage per position
+ax2 = sns.catplot(x="Pos", y="FT%", data=df);
+ax2.set(xlabel='Player Position', ylabel='Throws Percentage')
+plt.show()
