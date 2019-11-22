@@ -108,6 +108,8 @@ df.loc[df['player'] == "Jeff Pendergraph", ["ShootingHand", "Pos", "draftRank","
     = ["Right", "PF", "31","206","108","0.553","0.4","0.776","0.554"]
 df.loc[df['player'] == "Gerald Henderson", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%"]]\
     = ["Right", "SG", "12","196","97","0.423","0.327","0.793","0.460"]
+df.loc[df['player'] == "Walker Russell", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%"]]\
+    = ["Right", "PG", "undrafted","183","77","0.347","0.308","0.636","0.354"]
 
 
 
