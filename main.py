@@ -100,8 +100,16 @@ df.loc[df['player'] == "Alan Williams", ["ShootingHand", "Pos", "draftRank","Hei
     = ["Right", "PF", "","203","120","0.506","0.0","0.626","0.509"]
 df.loc[df['player'] == "Dominique Jones", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%"]]\
     = ["Right", "SG", "25","193","97","0.366","0.095","0.729","0.393"]
-
 df.loc[df['player'] == "Jason Thompson", ["Pos","FT%","draftRank"]] = ["PF", "0.657","12"]
+## Added by brian
+df.loc[df['player'] == "Mike Dunleavy", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%"]]\
+    = ["Right", "SF", "3","206","104","0.441","0.377","0.803","0.481"]
+df.loc[df['player'] == "Jeff Pendergraph", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%"]]\
+    = ["Right", "PF", "31","206","108","0.553","0.4","0.776","0.554"]
+df.loc[df['player'] == "Gerald Henderson", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%"]]\
+    = ["Right", "SG", "12","196","97","0.423","0.327","0.793","0.460"]
+
+
 
 df.to_csv("Test.csv")
 # End of fixing players missing stats
