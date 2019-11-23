@@ -8,6 +8,7 @@ df = pd.read_csv('SUMMARY.csv')
 # Start of getting some intuition of the data
 print(df.columns)
 # Start of fixing players missing stats
+'''
 df.loc[df['player'] == "Nene", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%"]] =\
     ["Right", "C", "7","211","113","0.548","0.132","0.66","0.551"]
 df.loc[df['player'] == "Antoine Walker", ["ShootingHand", "Pos", "draftRank","Height","Weight","FG%","3P%","FT%","2P%"]]\
@@ -114,6 +115,7 @@ df.loc[df['player'] == "Walker Russell", ["ShootingHand", "Pos", "draftRank","He
 
 
 df.to_csv("Test.csv")
+'''
 # End of fixing players missing stats
 # Show right handed vs left handed
 print(df["player"].nunique())
