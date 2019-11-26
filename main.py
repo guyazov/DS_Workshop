@@ -3,6 +3,8 @@ import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
 import seaborn as sns
 import matplotlib as mlp
 import matplotlib.pyplot as plt
+
+
 df = pd.read_csv('SUMMARY.csv')
 
 # Start of getting some intuition of the data
