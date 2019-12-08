@@ -166,3 +166,11 @@ plt.show()
 ax2 = sns.catplot(x="Pos", y="FT%", data=df);
 ax2.set(xlabel='Player Position', ylabel='Throws Percentage')
 plt.show()
+
+
+# Change positions to float numbers
+def preProcess_position(df):
+    df['Pos'] = df['Pos'].replace(['PG', 'SG'], 0.8)
+    df['Pos'] = df['Pos'].replace(['PF', 'SF'], 0.5)
+    df['Pos'] = df['Pos'].replace(['C'], 0.2)
+    return df
