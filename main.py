@@ -169,6 +169,8 @@ plt.show()
 
 
 # Change positions to float numbers
-df['Pos'] = df['Pos'].replace(['PG', 'SG'], 0.8)
-df['Pos'] = df['Pos'].replace(['PF', 'SF'], 0.5)
-df['Pos'] = df['Pos'].replace(['C'], 0.2)
+def preProcess_position(df):
+    df['Pos'] = df['Pos'].replace(['PG', 'SG'], 0.8)
+    df['Pos'] = df['Pos'].replace(['PF', 'SF'], 0.5)
+    df['Pos'] = df['Pos'].replace(['C'], 0.2)
+    return df
