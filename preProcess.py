@@ -30,10 +30,11 @@ def Overall_FT_Percentage_per_player(database):
     FT_dict_2 = df.to_dict()
     return FT_dict_2
 
-def calculateMSE(database):
+
+def calculate_mse(database):
     players = database["player"].unique()
-    dataset_percentage_dict = Dataset_FT_Percentage_per_player(players, database)
-    overall_percentage_dict = Overall_FT_Percentage_per_player(players, database)
+    dataset_percentage_dict = Dataset_FT_Percentage_per_player(database)
+    overall_percentage_dict = Overall_FT_Percentage_per_player(database)
     mse = 0
     for player in players:
         mse += ((overall_percentage_dict[player][0] - dataset_percentage_dict[player]) ** 2)
@@ -73,13 +74,13 @@ def get_players_teams_by_years(database):
         for year in years_of_play:
             result = dataFrame[dataFrame.Season.str.contains(str(year.replace(" ","")),na=False)]['Tm']
             if result.size==0:
-                print("Failed player: ", player, year)
+                #print("Failed player: ", player, year)
                 failed_players.append(player)
                 break
             single_player_dict[year.replace(" ","")] = result.values
         players_dict[player] = single_player_dict
-    print("Failed players : ", failed_players)
-    print("Players with no excel file : ", players_with_no_excel)
+    #print("Failed players : ", failed_players)
+    #print("Players with no excel file : ", players_with_no_excel)
     return players_dict
 
 
