@@ -117,12 +117,16 @@ def add_team_column(database):
 
     def team(row):
         try:
+            #temp=dict()
             teams_in_game = row.game.split(' - ')
             teams_in_year = b[row['player']][row['season'].split(' - ')[0]]
             teams_in_year = Align_teams_names(teams_in_year)
             a = [i for i in teams_in_year if i in teams_in_game]
-            # if len(a) > 1:
-            #    print("Very bad",row['player'], row['season'], a)
+            #if len(a) > 1:
+            #    if row['player'] not in temp:
+            #        temp[row['player']] = row['player'], row['season'], a
+            #        print(len(temp))
+            #    print("Very bad", row['player'], row['season'], a)
             return a[0]
         except:
             if row.game != 'EAST - WEST' and row.game != 'WEST - EAST':
@@ -155,3 +159,4 @@ def add_difference_column(database):
 def add_team_and_difference_columns(database):
     add_team_column(database)
     add_difference_column(database)
+
