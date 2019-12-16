@@ -24,20 +24,29 @@ def Dataset_FT_Percentage_per_player(database):
 
 
 def Overall_FT_Percentage_per_player(database):
+    print("New")
     players = database["player"].unique()
     FT_dict_2 = dict()
     df = database.groupby("player")["FT%"].unique()
     FT_dict_2 = df.to_dict()
+    for player in players:
+        temp_sum = 0
+        ft_percentage_temp = FT_dict_2[player]
+        for ft in ft_percentage_temp:
+            if ft != np.nan:
+                temp_sum += ft
+        FT_dict_2[player] = temp_sum
     return FT_dict_2
 
 
 def calculate_mse(database):
+    print("new2")
     players = database["player"].unique()
     dataset_percentage_dict = Dataset_FT_Percentage_per_player(database)
     overall_percentage_dict = Overall_FT_Percentage_per_player(database)
     mse = 0
     for player in players:
-        mse += ((overall_percentage_dict[player][0] - dataset_percentage_dict[player]) ** 2)
+        mse += ((overall_percentage_dict[player] - dataset_percentage_dict[player]) ** 2)
     mse = mse / len(players)
     return mse
 
