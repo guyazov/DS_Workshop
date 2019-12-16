@@ -160,3 +160,22 @@ def add_team_and_difference_columns(database):
     add_team_column(database)
     add_difference_column(database)
 
+def creating_the_complete_db(database):
+    # Guy's start editing the database:
+    # Convert the score column to be a string
+    database['score'] = database['score'].astype(str)
+    database['score'] = database['score'].replace(' - ', '-')
+    database.drop(database.loc[(database['player'] == 'Scott Machado')].index, inplace=True)
+    add_team_and_difference_columns(database)
+    # Drop Allstar games
+    database = database[database.Team != 'Allstar']
+
+    database_p1 = database[:309009]
+    print(database_p1.shape)
+    database_p2 = database[309009:]
+    print(database_p2.shape)
+    database_p1.to_csv("complete_database.csv")
+    database_p2.to_csv("complete_database_part2.csv")
+
+    # Guy's done editing the database:
+
