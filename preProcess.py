@@ -24,7 +24,12 @@ def Dataset_FT_Percentage_per_player(database):
 
 
 def Overall_FT_Percentage_per_player(database):
-    print("New")
+    '''
+    This func is not working at the moment - need to be fixed if one want
+    to calculate the MSE.
+    :param database:
+    :return:
+    '''
     players = database["player"].unique()
     FT_dict_2 = dict()
     df = database.groupby("player")["FT%"].unique()
@@ -40,7 +45,6 @@ def Overall_FT_Percentage_per_player(database):
 
 
 def calculate_mse(database):
-    print("new2")
     players = database["player"].unique()
     dataset_percentage_dict = Dataset_FT_Percentage_per_player(database)
     overall_percentage_dict = Overall_FT_Percentage_per_player(database)
@@ -133,11 +137,17 @@ def add_team_column(database):
 def add_difference_column(database):
     def get_difference_by_team(row):
         try:
-            if row['Team'] != 'Allstar' and row['Team'] != np.nan:
+            if row['Team'] != 'Allstar' and row['Team'] != np.nan and row['Team'] != 'nan':
                 team_index = row.game.split(' - ').index(row['Team'])
-                return int(row.score.split(' - ')[team_index]) - int(row.score.split(' - ')[1 - team_index])
+                return int(row.score.split('-')[team_index].replace(' ', ''))\
+                       - int(row.score.split('-')[1 - team_index].replace(' ', ''))
         except:
-            return row['player'], row['game'], row['Team'], row['season']
+            print("game: ", row.game.split(' - '))
+            print("score :", row['score'])
+            print("score type :", type(row['score']))
+            print("splitted: ", row.score.split('-'))
+            print(row['player'], row['game'], row['Team'], row['season'], row['score'])
+            return np.nan
 
     database['Difference'] = database.apply(get_difference_by_team, axis=1)
 
