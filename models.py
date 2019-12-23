@@ -4,6 +4,9 @@ from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.metrics import accuracy_score
+from keras.models import Sequential
+from keras.layers import Dense
 
 def logreg(X_train, Y_train,X_test, Y_test):
     logreg = linear_model.LogisticRegression(C=1e5)
@@ -34,3 +37,18 @@ def svm_grid_search():
     plt.ylabel('Mean score')
     plt.show()
 
+
+def nn_classifier(X_train, Y_train, X_test, Y_test, kernel):
+    model = Sequential()
+    # 14 is the number of features
+    model.add(Dense(10, input_dim=14, activation='relu'))
+    model.add(Dense(5, activation='relu'))
+    model.add(Dense(1, activation='sigmoid'))
+    # in case of multi class classification one should use 'categorical_crossentropy'
+    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+    model.fit(X_train, Y_train, epochs=100, batch_size=64)
+    y_pred = model.predict_classes(X_test)
+    score = model.evaluate(X_test, Y_test, verbose=1)
+    acc = accuracy_score(y_pred, Y_test)
+    print('Accuracy is:', acc * 100)
+    print(score)
