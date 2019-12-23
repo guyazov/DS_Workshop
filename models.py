@@ -19,7 +19,7 @@ def SVM(X_train, Y_train, X_test, Y_test, kernel):
     predictions = linear_svm_model.predict(X_test.values)
     return metrics.classification_report(Y_test, predictions)
 
-def svm_grid_searc():
+def svm_grid_search():
     Gammas = [1e-3, 1e-4]
     Cs = [1, 10, 100, 1000]
     tuned_parameters = [{'kernel': ['rbf'], 'gamma': Gammas, 'C': Cs},
