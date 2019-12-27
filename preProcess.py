@@ -191,7 +191,8 @@ def run_PCA(database, n):
     principalComponents = pca.fit_transform(x)
     principalColumns = ['principal component 1']
     for i in range(n-1):
-        principalColumns.append('principal component %d', i+2)
+        col = 'principal component ' + str(i + 2)
+        principalColumns.append(col)
     principalDf = pd.DataFrame(data=principalComponents, columns=principalColumns)
     finalDf = pd.concat([principalDf, database[['shot_made']]], axis=1)
     return finalDf
