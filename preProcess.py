@@ -3,8 +3,8 @@ import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
 import seaborn as sns
 import matplotlib as mlp
 import matplotlib.pyplot as plt
-import xlrd
-import os
+#import xlrd
+#import os
 from sklearn.decomposition import PCA
 
 
