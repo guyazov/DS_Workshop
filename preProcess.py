@@ -5,6 +5,8 @@ import matplotlib as mlp
 import matplotlib.pyplot as plt
 import xlrd
 import os
+from sklearn.decomposition import PCA
+
 
 # Change positions to float numbers
 def preProcess_position(database):
@@ -12,6 +14,7 @@ def preProcess_position(database):
     database['Pos'] = database['Pos'].replace(['PF', 'SF'], 0.5)
     database['Pos'] = database['Pos'].replace(['C'], 0.2)
     return database
+
 
 def Dataset_FT_Percentage_per_player(database):
     players = database["player"].unique()
@@ -179,3 +182,16 @@ def creating_the_complete_db(database):
 
     # Guy's done editing the database:
 
+
+# PCA for n dimensions; Should be used after normalizing the data
+def run_PCA(database, n):
+    #y = database.loc[:, ['shot_made']].values
+    x = database.drop(['shot_made'], axis=1)
+    pca = PCA(n_components=n)
+    principalComponents = pca.fit_transform(x)
+    principalColumns = ['principal component 1']
+    for i in range(n-1):
+        principalColumns.append('principal component %d', i+2)
+    principalDf = pd.DataFrame(data=principalComponents, columns=principalColumns)
+    finalDf = pd.concat([principalDf, database[['shot_made']]], axis=1)
+    return finalDf
