@@ -186,7 +186,7 @@ def creating_the_complete_db(database):
 # PCA for n dimensions; Should be used after normalizing the data
 def run_PCA(database, n):
     #y = database.loc[:, ['shot_made']].values
-    x = database.drop(['shot_made'], axis=1)
+    x = database.drop(['shot_made', 'player'], axis=1)
     pca = PCA(n_components=n)
     principalComponents = pca.fit_transform(x)
     principalColumns = ['principal component 1']
