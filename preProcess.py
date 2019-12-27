@@ -194,5 +194,8 @@ def run_PCA(database, n):
         col = 'principal component ' + str(i + 2)
         principalColumns.append(col)
     principalDf = pd.DataFrame(data=principalComponents, columns=principalColumns)
-    finalDf = pd.concat([principalDf, database[['shot_made']]], axis=1)
-    return finalDf
+    principalDf.head(5)
+    database.head(5)
+    #finalDf = pd.concat([principalDf, database[['shot_made']]], axis=1)
+    #return finalDf
+    return principalDf
