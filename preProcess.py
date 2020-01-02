@@ -184,18 +184,10 @@ def creating_the_complete_db(database):
 
 
 # PCA for n dimensions; Should be used after normalizing the data
-def run_PCA(database, n):
-    #y = database.loc[:, ['shot_made']].values
-    x = database.drop(['shot_made', 'player'], axis=1)
+def run_PCA(database, X_train, X_test, n):
     pca = PCA(n_components=n)
-    principalComponents = pca.fit_transform(x)
-    principalColumns = ['principal component 1']
-    for i in range(n-1):
-        col = 'principal component ' + str(i + 2)
-        principalColumns.append(col)
-    principalDf = pd.DataFrame(data=principalComponents, columns=principalColumns)
-    principalDf.head(5)
-    database.head(5)
-    #finalDf = pd.concat([principalDf, database[['shot_made']]], axis=1)
-    #return finalDf
-    return principalDf
+    pca.fit(X_train)
+    X_train = pca.transform(X_train)
+    X_test = pca.transform(X_test)
+
+    return X_train,X_test
