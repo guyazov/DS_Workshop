@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 #import xlrd
 #import os
 from sklearn.decomposition import PCA
-
+from scipy import stats
 
 # Change positions to float numbers
 def preProcess_position(database):
@@ -184,10 +184,22 @@ def creating_the_complete_db(database):
 
 
 # PCA for n dimensions; Should be used after normalizing the data
-def run_PCA(database, X_train, X_test, n):
+def run_PCA(X_train, X_test, n):
     pca = PCA(n_components=n)
     pca.fit(X_train)
     X_train = pca.transform(X_train)
     X_test = pca.transform(X_test)
 
     return X_train, X_test
+
+
+def find_correlations(database):
+    plt.figure(figsize=(12, 10))
+    cor = database.corr()
+    sns.heatmap(cor, annot=True, cmap=plt.cm.Reds)
+    plt.show()
+
+
+def detect_and_remove_outliers(database):
+    database = database[(np.abs(stats.zscore(database.select_dtypes(exclude='object'))) < 3).all(axis=1)]
+    return database
