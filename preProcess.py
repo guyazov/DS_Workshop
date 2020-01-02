@@ -190,4 +190,4 @@ def run_PCA(database, X_train, X_test, n):
     X_train = pca.transform(X_train)
     X_test = pca.transform(X_test)
 
-    return X_train,X_test
+    return X_train, X_test

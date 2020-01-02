@@ -9,10 +9,17 @@ from keras.models import Sequential
 from keras.layers import Dense
 
 def logreg(X_train, Y_train,X_test, Y_test):
+    '''
+    :param X_train: ndarray of x_train
+    :param Y_train: ndarray of y_train
+    :param X_test: ndarray of x_test
+    :param Y_test: ndarray of y_test
+    :return:
+    '''
     logreg = linear_model.LogisticRegression(C=1e5)
-    logreg.fit(X_train.values, Y_train.values)
-    predictions = logreg.predict(X_test.values)
-    predicted_probs = logreg.predict_proba(X_test.values)
+    logreg.fit(X_train, Y_train)
+    predictions = logreg.predict(X_test)
+    predicted_probs = logreg.predict_proba(X_test)
     return metrics.classification_report(Y_test, predictions)
 
 
