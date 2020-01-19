@@ -1,12 +1,13 @@
 from sklearn import linear_model
 from sklearn import metrics
 from sklearn.svm import SVC
-from sklearn.model_selection import GridSearchCV
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.metrics import accuracy_score
 from keras.models import Sequential
 from keras.layers import Dense
+from sklearn.metrics import plot_confusion_matrix
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score
 
 def logreg(X_train, Y_train,X_test, Y_test):
     '''
@@ -59,3 +60,34 @@ def nn_classifier(X_train, Y_train, X_test, Y_test, kernel):
     acc = accuracy_score(y_pred, Y_test)
     print('Accuracy is:', acc * 100)
     print(score)
+
+
+def plot_confusion(classifier, X_test, y_test, class_names):
+    # Plot non-normalized confusion matrix
+    titles_options = [("Confusion matrix, without normalization", None),
+                      ("Normalized confusion matrix", 'true')]
+    for title, normalize in titles_options:
+        disp = plot_confusion_matrix(estimator=classifier, X=X_test,
+                                     y_true=y_test,
+                                     display_labels=class_names,
+                                     normalize=normalize)
+        disp.ax_.set_title(title)
+        print(title)
+        print(disp.confusion_matrix)
+    plt.show()
+
+
+def logreg_grid_search(logreg_model,X_train, y_train, X_test, y_test, scoring):
+    grid_values = {'penalty': ['l2'], 'C': [0.001, .009, 0.01, .09, 1, 5, 10, 25]}
+    grid_clf_acc = GridSearchCV(logreg_model, param_grid=grid_values, scoring=scoring)
+    grid_clf_acc.fit(X_train, y_train)
+
+    # Predict values based on new parameters
+    y_pred_acc = grid_clf_acc.predict(X_test)
+
+    # New Model Evaluation metrics
+    print('Accuracy Score : ' + str(accuracy_score(y_test, y_pred_acc)))
+    print('Precision Score : ' + str(precision_score(y_test, y_pred_acc)))
+    print('Recall Score : ' + str(recall_score(y_test, y_pred_acc, pos_label=0)))
+    print('F1 Score : ' + str(f1_score(y_test, y_pred_acc)))
+

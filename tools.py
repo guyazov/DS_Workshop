@@ -133,3 +133,4 @@ def create_players_excels_stats():
     with open('failed_players.txt', 'w') as f:
         for item in failedPlayers:
             f.write("%s\n" % item)
+
