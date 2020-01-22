@@ -10,9 +10,15 @@ from scipy import stats
 
 # Change positions to float numbers
 def preProcess_position(database):
-    database['Pos'] = database['Pos'].replace(['PG', 'SG'], 0.8)
-    database['Pos'] = database['Pos'].replace(['PF', 'SF'], 0.5)
-    database['Pos'] = database['Pos'].replace(['C'], 0.2)
+    database.loc[database.Pos == 'PG'] = 0.8
+    database.loc[database.Pos == 'SG'] = 0.8
+    database.loc[database.Pos == 'PF'] = 0.5
+    database.loc[database.Pos == 'SF'] = 0.5
+    database.loc[database.Pos == 'C' ] = 0.2
+
+#     database['Pos'] = database['Pos'].replace(['PG', 'SG'], 0.8)
+#     database['Pos'] = database['Pos'].replace(['PF', 'SF'], 0.5)
+#     database['Pos'] = database['Pos'].replace(['C'], 0.2)
     return database
 
 
@@ -200,6 +206,8 @@ def find_correlations(database):
     plt.show()
 
 
-def detect_and_remove_outliers(database):
-    database = database[(np.abs(stats.zscore(database.select_dtypes(exclude='object'))) < 3).all(axis=1)]
-    return database
+def detect_and_remove_outliers(database,Y):
+    indexes = (np.abs(stats.zscore(database.select_dtypes(exclude='object'))) < 3).all(axis=1)
+    database = database[indexes]
+    Y = Y[indexes]
+    return database,Y
