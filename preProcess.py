@@ -211,3 +211,61 @@ def detect_and_remove_outliers(database,Y):
     database = database[indexes]
     Y = Y[indexes]
     return database,Y
+
+def add_previous_shots_feature(database_in):
+    database2 = database_in.copy()
+    print(database2.shape)
+    database2['First_shot'] = 0
+    database2['Second_shot'] = 0
+    database2['Third_shot'] = 0
+    database2['First_shot_was_in'] = 0
+    database2['Second_shot_was_in'] = 0
+
+    first_player = database2.head(1)['player'].values[0]
+    database2.loc[0, 'First_shot'] = 1
+    if 'makes free throw 1' in database2.head(1)['play'].values[0]:
+        score_first_flag = 1
+    else:
+        score_first_flag = -1
+    if 'of 1' in database2.head(1)['play'].values[0]:
+        number_of_remain_throws = 1
+    if 'of 2' in database2.head(1)['play'].values[0]:
+        number_of_remain_throws = 2
+    if 'of 3' in database2.head(1)['play'].values[0]:
+        number_of_remain_throws = 3
+
+    for i, row in database2.iterrows():
+        if i % 10000 == 0:
+            print(i)
+        # Are we still checking the same player?
+        if row['player'] == first_player and number_of_remain_throws > 0:
+            # 2nd shot
+            if 'makes free throw 2' in row['play']:
+                database2.loc[i, 'First_shot_was_in'] = score_first_flag
+                database2.loc[i, 'Second_shot'] = 1
+                score_second_flag = 1
+            if 'misses free throw 2' in row['play']:
+                database2.loc[i, 'First_shot_was_in'] = score_first_flag
+                database2.loc[i, 'Second_shot'] = 1
+                score_second_flag = -1
+            # 3rd shot
+            if 'free throw 3' in row['play']:
+                database2.loc[i, 'First_shot_was_in'] = score_first_flag
+                database2.loc[i, 'Second_shot_was_in'] = score_second_flag
+                database2.loc[i, 'Third_shot'] = 1
+
+        # New Player, or Same player - different shot cluster!
+        else:
+            first_player = row['player']
+            database2.loc[i, 'First_shot'] = 1
+            if 'makes free throw 1' in row['play']:
+                score_first_flag = 1
+            else:
+                score_first_flag = -1
+            if 'of 1' in row['play']:
+                number_of_remain_throws = 1
+            if 'of 2' in row['play']:
+                number_of_remain_throws = 2
+            if 'of 3' in row['play']:
+                number_of_remain_throws = 3
+        number_of_remain_throws -= 1
