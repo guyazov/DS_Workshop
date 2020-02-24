@@ -163,6 +163,6 @@ plt.show()
 
 
 # Throws percentage per position
-ax2 = sns.catplot(x="Pos", y="FT%", data=df);
+ax2 = sns.catplot(x="Pos", y="FT%", data=df)
 ax2.set(xlabel='Player Position', ylabel='Throws Percentage')
 plt.show()

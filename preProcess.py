@@ -1,10 +1,7 @@
-import numpy as np # linear algebra
-import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
+import numpy as np
+import pandas as pd
 import seaborn as sns
-import matplotlib as mlp
 import matplotlib.pyplot as plt
-#import xlrd
-#import os
 from sklearn.decomposition import PCA
 from scipy import stats
 import os
@@ -179,8 +176,11 @@ def add_team_and_difference_columns(database):
     add_difference_column(database)
 
 def creating_the_complete_db(database):
-    # Guy's start editing the database:
-    # Convert the score column to be a string
+    '''
+    Description: create an almost final version of our database.
+    :param database: a pandas Dataframe.
+    :return: Nothing.
+    '''
     database['score'] = database['score'].astype(str)
     database['score'] = database['score'].replace(' - ', '-')
     database.drop(database.loc[(database['player'] == 'Scott Machado')].index, inplace=True)
@@ -195,11 +195,16 @@ def creating_the_complete_db(database):
     database_p1.to_csv("complete_database.csv")
     database_p2.to_csv("complete_database_part2.csv")
 
-    # Guy's done editing the database:
-
 
 # PCA for n dimensions; Should be used after normalizing the data
 def run_PCA(X_train, X_test, n):
+    '''
+    Description: run PCA on the data
+    :param X_train: train dataset.
+    :param X_test: test dataset.
+    :param n: number of dimensions we want reduce to.
+    :return: train dataset and test dataset in lower dimension(n-th dimension).
+    '''
     pca = PCA(n_components=n)
     pca.fit(X_train)
     X_train = pca.transform(X_train)
@@ -209,19 +214,36 @@ def run_PCA(X_train, X_test, n):
 
 
 def find_correlations(database):
+    '''
+    Description: plot correlation heat map.
+    :param database: a pandas Dataframe.
+    :return: Nothing.
+    '''
     plt.figure(figsize=(12, 10))
     cor = database.corr()
     sns.heatmap(cor, annot=True, cmap=plt.cm.Reds)
     plt.show()
 
 
-def detect_and_remove_outliers(database,Y):
+def detect_and_remove_outliers(database, Y):
+    '''
+    Description: detect and remove outliers.
+    :param database: a pandas Dataframe.
+    :param Y: labels.
+    :return: database and labels which outliers were removed from.
+    '''
     indexes = (np.abs(stats.zscore(database.select_dtypes(exclude='object'))) < 3).all(axis=1)
     database = database[indexes]
     Y = Y[indexes]
-    return database,Y
+    return database, Y
 
 def add_previous_shots_feature(database_in):
+    '''
+    Description: adding new features - what shot is it and were previous
+    shots were in or out.
+    :param database_in: a pandas Dataframe.
+    :return: a pandas Dataframe with the new features.
+    '''
     database2 = database_in.copy()
     print(database2.shape)
     database2['First_shot'] = 0
@@ -278,3 +300,4 @@ def add_previous_shots_feature(database_in):
             if 'of 3' in row['play']:
                 number_of_remain_throws = 3
         number_of_remain_throws -= 1
+    return database2
