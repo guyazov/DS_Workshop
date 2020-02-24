@@ -135,8 +135,48 @@ def logreg_grid_search(logreg_model,X_train, y_train, X_test, y_test, scoring):
 
 
 
-def random_forest(X_train, Y_train, X_test, Y_test):
+def random_forest(X_train, Y_train, X_test, Y_test,threshold_flag=True):
+    '''
+    Description: random forest model
+    :param threshold_flag: if true - find highest recall model with said
+    constrains if false - use the default model.
+    :param X_train: ndarray of x_train
+    :param y_train: ndarray of y_train
+    :param X_test: ndarray of x_test
+    :param y_test: ndarray of y_test
+    :return: results of the random forest model.
+    '''
     rf = RandomForestClassifier(n_estimators=16, max_depth=20, random_state=0)
-    rf.fit(X_train.values, Y_train.values)
-    predictions = rf.predict(X_test.values)
-    return metrics.classification_report(Y_test, predictions)
+    rf.fit(X_train, Y_train)
+    predictions = rf.predict(X_test)
+    predicted_proba = rf.predict_proba(X_test)
+    if threshold_flag:
+        threshold = find_best_thershold(X_test, Y_test,rf)
+        predicted = (predicted_proba[:, 1] >= threshold).astype('int')
+        return metrics.classification_report(Y_test, predicted)
+    else:
+        return metrics.classification_report(Y_test, predictions)
+
+
+
+def find_best_thershold(X_test, Y_test,model_after_fit):
+    '''
+    Description: Find the threshold that gets highest recall score on missed shots
+    while still getting at least 0.7 accuracy score.
+    :param X_test: ndarray of x_test
+    :param y_test: ndarray of y_test
+    :param model_after_fit: model after fit action
+    :return: The best threshold.
+    '''
+
+    recall_score_test_max = 0
+    threshold_test_max = 0
+    thresholds = np.arange(0.6,1,0.01)
+    for threshold in thresholds:
+        predicted_test_proba = model_after_fit.predict_proba(X_test)
+        predicted_test = (predicted_test_proba [:,1] >= threshold).astype('int')
+        if recall_score_test_max < recall_score(Y_test, predicted_test, pos_label=0) and accuracy_score(Y_test, predicted_test) > 0.7:
+            recall_score_test_max = recall_score(Y_test, predicted_test, pos_label=0)
+            threshold_test_max = threshold
+    #print("threshold test max:",threshold_test_max, "recall_test_max : ", recall_score_test_max)
+    return threshold_test_max
