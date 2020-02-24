@@ -9,6 +9,22 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import metrics
+from sklearn.preprocessing import StandardScaler
+
+
+def normelize_data(semiNormal_parameters, nonNormal_parameters,X_train,X_test):
+    '''
+
+    :param semiNormal_parameters: semi normal params
+    :param nonNormal_parameters: non normal params
+    :param X_train: a pandas Dataframe
+    :param X_test: a pandas Dataframe
+    :return: normelized version of X_train and X_test
+    '''
+    sc = StandardScaler()
+    X_train[semiNormal_parameters+nonNormal_parameters] = sc.fit_transform(X_train[semiNormal_parameters+nonNormal_parameters])
+    X_test[semiNormal_parameters+nonNormal_parameters] = sc.fit_transform(X_test[semiNormal_parameters+nonNormal_parameters])
+    return X_train, X_test
 
 
 def logreg(X_train, Y_train,X_test, Y_test):

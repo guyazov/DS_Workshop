@@ -4,6 +4,8 @@ import requests
 from bs4 import BeautifulSoup, NavigableString
 import pandas as pd
 import numpy as np
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import StandardScaler
 
 from PandasBasketball import pandasbasketball as pb
 BASE_URL = "https://www.basketball-reference.com"
@@ -133,4 +135,3 @@ def create_players_excels_stats():
     with open('failed_players.txt', 'w') as f:
         for item in failedPlayers:
             f.write("%s\n" % item)
-
