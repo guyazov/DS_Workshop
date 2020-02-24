@@ -7,9 +7,14 @@ import matplotlib.pyplot as plt
 #import os
 from sklearn.decomposition import PCA
 from scipy import stats
+import os
 
-# Change positions to float numbers
 def preProcess_position(database):
+    '''
+    Description: changing positions to float numbers
+    :param database: a pandas Dataframe.
+    :return: a pandas Dataframe with positions as float numbers.
+    '''
     database.loc[database.Pos == 'PG'] = 0.8
     database.loc[database.Pos == 'SG'] = 0.8
     database.loc[database.Pos == 'PF'] = 0.5
@@ -23,6 +28,11 @@ def preProcess_position(database):
 
 
 def Dataset_FT_Percentage_per_player(database):
+    '''
+    Description: calculating free throw % of each player.
+    :param database: a pandas Dataframe.
+    :return: a dictionary with player as key and FT % as value.
+    '''
     players = database["player"].unique()
     FT_dict = dict()
     for player in players:
@@ -32,39 +42,12 @@ def Dataset_FT_Percentage_per_player(database):
     return FT_dict
 
 
-def Overall_FT_Percentage_per_player(database):
-    '''
-    This func is not working at the moment - need to be fixed if one want
-    to calculate the MSE.
-    :param database:
-    :return:
-    '''
-    players = database["player"].unique()
-    FT_dict_2 = dict()
-    df = database.groupby("player")["FT%"].unique()
-    FT_dict_2 = df.to_dict()
-    for player in players:
-        temp_sum = 0
-        ft_percentage_temp = FT_dict_2[player]
-        for ft in ft_percentage_temp:
-            if ft != np.nan:
-                temp_sum += ft
-        FT_dict_2[player] = temp_sum
-    return FT_dict_2
-
-
-def calculate_mse(database):
-    players = database["player"].unique()
-    dataset_percentage_dict = Dataset_FT_Percentage_per_player(database)
-    overall_percentage_dict = Overall_FT_Percentage_per_player(database)
-    mse = 0
-    for player in players:
-        mse += ((overall_percentage_dict[player] - dataset_percentage_dict[player]) ** 2)
-    mse = mse / len(players)
-    return mse
-
-
 def get_players_years_dict(database):
+    '''
+    Description: finding each player years of play.
+    :param database: a pandas Dataframe.
+    :return: a dictionary with player as key and its years of play in our dataset as value.
+    '''
     players = database["player"].unique()
     players_years_of_play = {}
     for player in players:
@@ -77,6 +60,12 @@ def get_players_years_dict(database):
 
 
 def get_players_teams_by_years(database):
+    '''
+    Description: finding the teams of each player (adjusted to its years of play).
+    :param database: a pandas Dataframe.
+    :return: a dictionary with player as key and value of another dictionary with year as key and
+    the teams the player play in that year as value.
+    '''
     players = database["player"].unique()
     players_years_of_play = get_players_years_dict(database)
     players_dict = {}
@@ -95,18 +84,23 @@ def get_players_teams_by_years(database):
         years_of_play = players_years_of_play[player]
         for year in years_of_play:
             result = dataFrame[dataFrame.Season.str.contains(str(year.replace(" ","")),na=False)]['Tm']
-            if result.size==0:
-                #print("Failed player: ", player, year)
+            if result.size == 0:
                 failed_players.append(player)
                 break
             single_player_dict[year.replace(" ","")] = result.values
         players_dict[player] = single_player_dict
-    #print("Failed players : ", failed_players)
-    #print("Players with no excel file : ", players_with_no_excel)
     return players_dict
 
 
 def Align_teams_names_aux(teams_in_year,origs,replacements):
+    '''
+    Description: some teams held different names through the dataset. So we were needed to align them.
+                 This method is an auxilary method which does that.
+    :param teams_in_year: the teams we have at the moment
+    :param origs: the teams names to be replaced.
+    :param replacements: the teams names that shall replace other names.
+    :return: a list of teams with coherent names.
+    '''
     teams_in_year = teams_in_year.tolist()
     for i, orig in enumerate(origs,0):
         if orig in teams_in_year:
@@ -115,27 +109,31 @@ def Align_teams_names_aux(teams_in_year,origs,replacements):
 
 
 def Align_teams_names(teams_in_year):
+    '''
+    Description: call the auxilary function with the appropriate names.
+    :param teams_in_year: a list of teams with maybe not coherent names.
+    :return: a list of teams with coherent names.
+    '''
     origs = ['PHO','NOK','WAS','GSW','NJN','UTA','NYK','SAS','NOH','NOP','BRK','CHO']
     replacements = ['PHX','NO','WSH','GS', 'NJ','UTAH','NY', 'SA', 'NO', 'NO','BKN', 'CHA']
     return Align_teams_names_aux(teams_in_year,origs,replacements)
 
 
 def add_team_column(database):
-    # Here we add a new column to the database - the team in which the player play in the shooting time.
+    '''
+    Description: adding a new column to the database - the team in which the player play in the shooting time.
+    :param database: a pandas Dataframe.
+    :return: Nothing.
+    '''
+
     b = get_players_teams_by_years(database)
 
     def team(row):
         try:
-            #temp=dict()
             teams_in_game = row.game.split(' - ')
             teams_in_year = b[row['player']][row['season'].split(' - ')[0]]
             teams_in_year = Align_teams_names(teams_in_year)
             a = [i for i in teams_in_year if i in teams_in_game]
-            #if len(a) > 1:
-            #    if row['player'] not in temp:
-            #        temp[row['player']] = row['player'], row['season'], a
-            #        print(len(temp))
-            #    print("Very bad", row['player'], row['season'], a)
             return a[0]
         except:
             if row.game != 'EAST - WEST' and row.game != 'WEST - EAST':
@@ -148,6 +146,12 @@ def add_team_column(database):
 
 
 def add_difference_column(database):
+    '''
+    Description: adding a new column to the database - the difference in the score (not absolute) in the
+    shooting time.
+    :param database: a pandas Dataframe.
+    :return: Nothing.
+    '''
     def get_difference_by_team(row):
         try:
             if row['Team'] != 'Allstar' and row['Team'] != np.nan and row['Team'] != 'nan':
@@ -166,6 +170,11 @@ def add_difference_column(database):
 
 
 def add_team_and_difference_columns(database):
+    '''
+    Description: call the methods that add new team and difference columns.
+    :param database: a pandas Dataframe.
+    :return: Nothing.
+    '''
     add_team_column(database)
     add_difference_column(database)
 
