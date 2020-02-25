@@ -1,7 +1,5 @@
 import numpy as np
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 from scipy import stats
 import os
@@ -20,51 +18,32 @@ def make_binary_variables(database):
 
 def make_numeric_variables(database):
     '''
-    Description: convert the Height and Weight variables to numeric ones.
+    Description: convert the Height, Weight and draft rank variables to
+    numeric ones.
     :param database: a pandas Dataframe
     :return: The edited Dataframe.
     '''
     database['Height'] = database['Height'].map(lambda x: int(x))
     database['Weight'] = database['Weight'].map(lambda x: int(x))
+    database['draftRank'] = database.draftRank.apply(lambda x: int(float(x)))
     return database
 
 
 def fill_missing_values(database):
     '''
-    Description: Fill missing values of FT% and 3P%.
+    Description: Fill missing values of FT% and 3P% with their median. For missing
+    draft ranks or for undrafted players we use the value '61' since there are only
+    60 players which been drafted every year.
     :param database: a pandas Dataframe
     :return: The edited Dataframe.
     '''
     database['FT%'] = database['FT%'].fillna(database['FT%'].mode()[0])
     database['3P%'] = database['3P%'].fillna(database['FT%'].mode()[0])
+    database['draftRank'] = database['draftRank'].replace(np.nan, 61)
+    database['draftRank'] = database['draftRank'].replace("undrafted", 61)
     return database
 
 
-def analyze_shots_per_game(database):
-    '''
-    Description: Playoffs vs regular season plotting.
-    :param database: a pandas Dataframe
-    :return: Nothing.
-    '''
-    shot_attempted_per_game = database.groupby(["season", "playoffs"])['shot_made'].count().unstack()
-    shot_made_per_game = database.groupby(["season", "playoffs"])['shot_made'].sum().unstack()
-
-    # this has to be divided by the number of games for each season to get an average
-    number_of_games = database.groupby(["season", "playoffs"])['game_id'].nunique().unstack()
-
-    average_shot_made_per_game = shot_made_per_game / number_of_games
-    average_shot_attempted_per_game = shot_attempted_per_game / number_of_games
-
-    f, (ax1) = plt.subplots(figsize=(18, 18))
-    first = average_shot_attempted_per_game.plot(ax=ax1, marker='o', figsize=(15, 8), xticks=range(10),
-                                                 color=['b', 'r'], rot=90)
-    second = average_shot_made_per_game.plot(ax=ax1, marker='o', linestyle='--', figsize=(15, 8), xticks=range(10),
-                                             color=['b', 'r'], rot=90)
-    ax1.set_title('Average number of free throws per period. Attempted vs Successful', size=25)
-    legend = plt.legend((' playoffs attempted', 'regular attempted', 'playoffs successful', 'regular successful'),
-                        loc=6)
-    ax1.add_artist(legend)
-    plt.show()
 
 def make_pos_column_as_one_hot(X_train,X_test):
     '''
@@ -302,18 +281,6 @@ def run_PCA(X_train, X_test, n):
     X_test = pca.transform(X_test)
 
     return X_train, X_test
-
-
-def find_correlations(database):
-    '''
-    Description: plot correlation heat map.
-    :param database: a pandas Dataframe.
-    :return: Nothing.
-    '''
-    plt.figure(figsize=(12, 10))
-    cor = database.corr()
-    sns.heatmap(cor, annot=True, cmap=plt.cm.Reds)
-    plt.show()
 
 
 def detect_and_remove_outliers(database, Y):

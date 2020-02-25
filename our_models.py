@@ -4,7 +4,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from keras.models import Sequential
 from keras.layers import Dense
-from sklearn.metrics import plot_confusion_matrix
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score
 from sklearn.ensemble import RandomForestClassifier
@@ -84,29 +83,6 @@ def nn_classifier(X_train, Y_train, X_test, Y_test):
     acc = accuracy_score(y_pred, Y_test)
     print('Accuracy is:', acc * 100)
     print(score)
-
-
-def plot_confusion(classifier, X_test, y_test, class_names):
-    '''
-    Description: plot the confusion matrix
-    :param classifier: the classifier
-    :param X_test: x test dataset
-    :param y_test: y(labels) test dataset
-    :param class_names: the names of the classes
-    :return: Nothing.
-    '''
-    # Plot non-normalized confusion matrix
-    titles_options = [("Confusion matrix, without normalization", None),
-                      ("Normalized confusion matrix", 'true')]
-    for title, normalize in titles_options:
-        disp = plot_confusion_matrix(estimator=classifier, X=X_test,
-                                     y_true=y_test,
-                                     display_labels=class_names,
-                                     normalize=normalize)
-        disp.ax_.set_title(title)
-        print(title)
-        print(disp.confusion_matrix)
-    plt.show()
 
 
 def logreg_grid_search(logreg_model,X_train, y_train, X_test, y_test, scoring):
