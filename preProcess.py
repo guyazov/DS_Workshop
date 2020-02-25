@@ -7,6 +7,38 @@ from scipy import stats
 import os
 from sklearn.preprocessing import StandardScaler,MinMaxScaler
 
+def make_binary_variables(database):
+    '''
+    Description: convert the playoffs and ShootingHand variables to binary ones.
+    :param database: a pandas Dataframe
+    :return: The edited Dataframe.
+    '''
+    database['playoffs'] = database['playoffs'].map(lambda x : 0 if x == 'regular' else 1)
+    database['ShootingHand'] = database['ShootingHand'].map(lambda x : 0 if x == 'Right' else 1)
+    return database
+
+
+def make_numeric_variables(database):
+    '''
+    Description: convert the Height and Weight variables to numeric ones.
+    :param database: a pandas Dataframe
+    :return: The edited Dataframe.
+    '''
+    database['Height'] = database['Height'].map(lambda x: int(x))
+    database['Weight'] = database['Weight'].map(lambda x: int(x))
+    return database
+
+
+def fill_missing_values(database):
+    '''
+    Description: Fill missing values of FT% and 3P%.
+    :param database: a pandas Dataframe
+    :return: The edited Dataframe.
+    '''
+    database['FT%'] = database['FT%'].fillna(database['FT%'].mode()[0])
+    database['3P%'] = database['3P%'].fillna(database['FT%'].mode()[0])
+    return database
+
 
 def analyze_shots_per_game(database):
     '''
@@ -361,20 +393,28 @@ def add_previous_shots_feature(database_in):
         number_of_remain_throws -= 1
     return database2
 
-def add_abs_time_column(database):
+def add_time_columns(database):
     '''
-    Description: add a new column - absolute time to the database
+    Description: add new columns related to time- second, minute, absolute minute
+    and absolute time
     :param database: a pandas Dataframe
-    :return: return a pandas Dataframe with a new column - absolute time
+    :return: return a pandas Dataframe with the new columns
     '''
     database['minute'] = database.time.apply(lambda x: int(x[:len(x)-3]))
     database['sec'] = database.time.apply(lambda x: int(x[len(x)-2:]))
     database['abs_min'] = 12 - database['minute']+12*(database.period -1)
     database['abs_time'] = 60*(database.abs_min-1) + 60 - database['sec']
-    # adding a scoreDif column that represents the difference in the groups scores in the time of the throw:
+
+def add_score_columns(database):
+    '''
+    Description: add new columns related to scores- scores and score difference
+    :param database: a pandas Dataframe
+    :return: return a pandas Dataframe with the new columns
+    '''
     database['scores'] = database.score.replace(' - ', '-').apply(lambda x: x.split('-'))
     database['scoreDif'] = database.scores.apply(lambda x: abs(int(x[1])-int(x[0])))
     return database
+
 
 
 def manually_edit_players(df):
