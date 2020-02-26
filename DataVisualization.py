@@ -200,3 +200,5 @@ def plot_general_info(database):
     ax1.legend(loc=2)
     ax2.plot()
     ax1.legend();
+
+
