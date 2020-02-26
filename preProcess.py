@@ -382,7 +382,51 @@ def add_score_columns(database):
     database['scoreDif'] = database.scores.apply(lambda x: abs(int(x[1])-int(x[0])))
     return database
 
-
+def create_ft_stats(database):
+    '''
+    Description: Fix FT% column for every player.
+    Every FT% will be calculated on his past seasons only, not including current season.
+    This was done in order to not use future information that we didnt hold at this time, to make our prediction
+    more realistic.
+    return: return a pandas dataframe like our db but with fixed FT% column
+    '''
+    path = os.getcwd()
+    freeThrowsDB = database
+    seasons = freeThrowsDB.season.unique()
+    path += "/players_stats"
+    files = os.listdir(path)
+    for j,playerFile in enumerate(files):
+        if "xlsx" not in playerFile:
+            continue
+        playerName = playerFile.replace(".xlsx", "")
+        playerPath = f"{path}/{playerFile}"
+        playerDB = pd.read_excel(playerPath)
+        playerDB = playerDB[['Season', 'FT', 'FTA']]
+        seasons = list(playerDB.Season.unique())
+        free_throw_pctg_dict = dict()
+        total_ft_attemped = 0
+        total_ft_made = 0
+        for i,season in enumerate(seasons):
+            if season in ['Career',np.nan]:
+                continue
+            if i==0: #FIRST PLAYER SEASON!
+                current_pctg = np.nan
+            else:
+                total_ft_attemped += playerDB.loc[playerDB['Season'] == seasons[i-1]]['FTA'].values[0]
+                total_ft_made += playerDB.loc[playerDB['Season'] == seasons[i-1]]['FT'].values[0]
+                if total_ft_attemped == 0:
+                    current_pctg = np.nan
+                else:
+                    current_pctg = total_ft_made / total_ft_attemped
+            start_year, end_year = season.split("-")
+            end_year = int(end_year)
+            if int(start_year) < 2006: continue
+            end_year += 2000
+            season = f"{start_year} - {end_year}"
+            free_throw_pctg_dict[season] = current_pctg
+            freeThrowsDB.loc[(freeThrowsDB['player'] == playerName) & (freeThrowsDB['season']==season), ["FT%"]] = [current_pctg]
+    return freeThrowsDB
+    
 
 def manually_edit_players(df):
     '''

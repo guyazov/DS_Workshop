@@ -9,10 +9,16 @@ from sklearn.preprocessing import StandardScaler
 
 from PandasBasketball import pandasbasketball as pb
 BASE_URL = "https://www.basketball-reference.com"
-playerCode = pb.generate_code("Lebron James")
-url = BASE_URL + f"/players/{playerCode[0]}/{playerCode}.html"
 
 def get_player_stats(playerName):
+    '''
+    Description: this function receive an NBA player name (as a string) and extract with a web-wrapper (Beatiful-Soup),
+                 we extract more stats about our players in dataset to collect more information.
+                 Data is collected from "https://www.basketball-reference.com" website.
+    :param playerName: string that should be a NBA player name
+    :return: A pandas dataframe with player stats received from website.
+    '''
+    
     playerName = playerName.replace(".", "").replace("'", "")
     playerCode = pb.generate_code(playerName)
     url = BASE_URL + f"/players/{playerCode[0]}/{playerCode}.html"
@@ -61,8 +67,10 @@ def get_player_stats(playerName):
 
 
 def get_data_master2(table, tdata):
-    """
-    """
+    '''
+    Description: an internal function originally from "PandasBasketball" python library, (original name get_data_master), 
+                    but library functions has some bugs so we fixed them.
+    '''
 
     columns = []
     heading = table.find("thead")
@@ -113,6 +121,11 @@ def get_data_master2(table, tdata):
 
 ## CODE TO CREATE EXCELS STATS
 def create_players_excels_stats():
+    '''
+    Description: Function originally used to create players excel's stats files under 'player_stats' directory.
+                 The function iterates over all the player in Kaggle's database and uses 'get_player_stats' func to extract 
+                 the stats with the web-wrapper.
+    '''
     database = pd.read_csv("free_throws.csv")
     playersNames = database.player.unique()
     failedPlayers = []
@@ -123,15 +136,13 @@ def create_players_excels_stats():
         try:
             dataFrame = get_player_stats(playerName)
             dataFrame.to_excel("{}.xlsx".format(playerName))
-            print("player {} from total of {} - Succeed!".format(i, numberOfPlayers))
+#             print("player {} from total of {} - Succeed!".format(i, numberOfPlayers))
         except Exception as e:
-            print("{} RAISED AN ERROR DURING SCRIPT".format(playerName))
-            print("player {} from total of {} - ERROR!".format(i, numberOfPlayers))
+#             print("{} RAISED AN ERROR DURING SCRIPT".format(playerName))
+#             print("player {} from total of {} - ERROR!".format(i, numberOfPlayers))
             failedPlayers.append(playerName)
         i+=1
 
-    print("Failed players:")
-    print(failedPlayers)
     with open('failed_players.txt', 'w') as f:
         for item in failedPlayers:
             f.write("%s\n" % item)

@@ -8,6 +8,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import metrics
+from sklearn.neighbors import KNeighborsClassifier
 
 
 def logreg(X_train, Y_train,X_test, Y_test):
@@ -60,7 +61,8 @@ def svm_grid_search():
     plt.ylabel('Mean score')
     plt.show()
 
-
+                            
+                   
 def nn_classifier(X_train, Y_train, X_test, Y_test):
     '''
     Description: neural network classifier model
@@ -83,6 +85,72 @@ def nn_classifier(X_train, Y_train, X_test, Y_test):
     acc = accuracy_score(y_pred, Y_test)
     print('Accuracy is:', acc * 100)
     print(score)
+    
+    
+def neural_net_model(X_train,y_model_train):
+    '''
+    Description: neural network classifier model
+    :param X_train: ndarray of x_train
+    :param Y_train: ndarray of y_train
+    :return: A NN keras model.
+    '''
+    import keras
+    from keras.models import Sequential
+    from keras.layers import Dense
+    from keras.layers import Dropout
+    from keras.layers import LeakyReLU
+    from keras.utils import to_categorical
+    from keras.optimizers import Adagrad
+    model = Sequential()
+    model.add(Dense(12, input_dim=X_train.shape[1]))
+    model.add(LeakyReLU(alpha=0.1))
+    model.add(Dense(20))#, activation='relu'))
+    model.add(LeakyReLU(alpha=0.1))
+    model.add(Dropout(0.5))
+    model.add(Dense(10))#, activation='relu'))
+    model.add(LeakyReLU(alpha=0.1))
+    model.add(Dropout(0.5))
+    model.add(Dense(5))#, activation='relu'))
+    model.add(LeakyReLU(alpha=0.1))
+    model.add(Dense(1, activation='sigmoid'))
+    model.compile(loss="binary_crossentropy", optimizer=Adagrad(learning_rate=0.001), metrics=['accuracy'])
+    return model
+    
+    
+    
+    
+def focal_loss_nn_model(X_train,y_model_train,focal_loss):
+    '''
+    Description: neural network classifier model
+    :param X_train: ndarray of x_train
+    :param Y_train: ndarray of y_train
+    :param X_test: ndarray of x_test
+    :param Y_test: ndarray of y_test
+    :return: A neural network model with focal loss.
+    '''                        
+    import keras
+    from keras.models import model_from_json
+    from keras.models import Sequential
+    from keras.layers import Dense
+    from keras.layers import Dropout
+    from keras.layers import LeakyReLU
+    from keras.utils import to_categorical
+    from keras.optimizers import Adagrad
+
+    focal_loss_model = Sequential()
+    focal_loss_model.add(Dense(12, input_dim=X_train.shape[1]))
+    focal_loss_model.add(LeakyReLU(alpha=0.1))
+    focal_loss_model.add(Dense(20))#, activation='relu'))
+    focal_loss_model.add(LeakyReLU(alpha=0.1))
+    focal_loss_model.add(Dropout(0.5))
+    focal_loss_model.add(Dense(10))#, activation='relu'))
+    focal_loss_model.add(LeakyReLU(alpha=0.1))
+    focal_loss_model.add(Dropout(0.5))
+    focal_loss_model.add(Dense(5))#, activation='relu'))
+    focal_loss_model.add(LeakyReLU(alpha=0.1))
+    focal_loss_model.add(Dense(1, activation='sigmoid'))
+    focal_loss_model.compile(loss=[focal_loss], optimizer=Adagrad(learning_rate=0.001), metrics=['accuracy'])
+    return focal_loss_model
 
 
 def logreg_grid_search(logreg_model,X_train, y_train, X_test, y_test, scoring):
@@ -133,8 +201,22 @@ def random_forest(X_train, Y_train, X_test, Y_test,threshold_flag=True):
     else:
         return metrics.classification_report(Y_test, predictions)
 
-
-
+def knn_grid_search(X_train, y_model_train,X_test,y_test):
+    '''
+    Description: performing grid search on the SVM model parameters.
+    :return: two lists, one for training reports and the second for test reports.
+    every item in each list is a text with the performance of the model.
+    K range: 1-11
+    '''
+    training_reports = []
+    test_reports = []
+    for i in range(1,12):
+        knn = KNeighborsClassifier(n_neighbors=i, metric='minkowski',p=2)
+        nn.fit(X_train, y_model_train)
+        training_reports.append(metrics.classification_report(y_model_train, knn.predict(X_train)))
+        test_reports.append(metrics.classification_report(y_test, knn.predict(X_test)))
+    return training_reports, test_reports
+                            
 def find_best_thershold(X_test, Y_test,model_after_fit):
     '''
     Description: Find the threshold that gets highest recall score on missed shots
