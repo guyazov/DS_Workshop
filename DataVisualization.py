@@ -182,3 +182,21 @@ def plot_distributions_of_shooting_percentage_only(database):
     sns.kdeplot(database['FG%'], label="FG%")
     plt.legend();
     plt.show()
+
+
+def plot_general_info(database):
+    '''
+    Description: plot general info about features such as shooting hand,
+    and scoring % per position.
+    :param database: a pandas Dataframe.
+    :return: Nothing.
+    '''
+    fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1, figsize=(8, 8))
+    database.groupby('Pos').agg({'FT%': 'mean'}).plot.bar(ax=ax2, width=0.1)
+    ax1.bar([1, 2], [database.groupby(["ShootingHand"])["player"].nunique()[0],
+                   database.groupby(["ShootingHand"])["player"].nunique()[1]], width=0.1,
+            tick_label=['Right', 'Left'], label='ShootingHand')
+    ax1.set_xlim(0.5, 2.5)
+    ax1.legend(loc=2)
+    ax2.plot()
+    ax1.legend();
