@@ -253,10 +253,10 @@ def plot_as_func_threshold(X_test, Y_test,model_after_fit):
     thresholds = np.arange(0.0,1,0.05)
     for threshold in thresholds:
         predicted_test_proba = model_after_fit.predict_proba(X_test)
-        predicted_test = (predicted_test_proba [:,1] >= threshold).astype('int')
+        predicted_test = (np.asarray(predicted_test_proba)[:,0] >= threshold).astype('int')
         recalls.append(recall_score(Y_test, predicted_test, pos_label=0))
         accuracy.append(accuracy_score(Y_test, predicted_test))
-        
+    
     plt.plot(thresholds,recalls)
     plt.plot(thresholds,accuracy)
     plt.legend(['Label 0 recall', 'Total Accuracy'], loc='right')
