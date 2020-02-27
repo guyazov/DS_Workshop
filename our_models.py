@@ -197,9 +197,9 @@ def random_forest(X_train, Y_train, X_test, Y_test,threshold_flag=True):
     if threshold_flag:
         threshold = find_best_thershold(X_test, Y_test,rf)
         predicted = (predicted_proba[:, 1] >= threshold).astype('int')
-        return metrics.classification_report(Y_test, predicted)
+        return metrics.classification_report(Y_test, predicted) , rf
     else:
-        return metrics.classification_report(Y_test, predictions)
+        return metrics.classification_report(Y_test, predictions) , rf
 
 def knn_grid_search(X_train, y_model_train,X_test,y_test):
     '''
@@ -238,3 +238,28 @@ def find_best_thershold(X_test, Y_test,model_after_fit):
             threshold_test_max = threshold
     #print("threshold test max:",threshold_test_max, "recall_test_max : ", recall_score_test_max)
     return threshold_test_max
+
+def plot_as_func_threshold(X_test, Y_test,model_after_fit):
+    '''
+    Description: Find the threshold that gets highest recall score on missed shots
+    while still getting at least 0.7 accuracy score.
+    :param X_test: ndarray of x_test
+    :param y_test: ndarray of y_test
+    :param model_after_fit: model after fit action
+    :return: The best threshold.
+    '''
+    recalls = []
+    accuracy = []
+    thresholds = np.arange(0.0,1,0.05)
+    for threshold in thresholds:
+        predicted_test_proba = model_after_fit.predict_proba(X_test)
+        predicted_test = (predicted_test_proba [:,1] >= threshold).astype('int')
+        recalls.append(recall_score(Y_test, predicted_test, pos_label=0))
+        accuracy.append(accuracy_score(Y_test, predicted_test))
+        
+    plt.plot(thresholds,recalls)
+    plt.plot(thresholds,accuracy)
+    plt.legend(['Label 0 recall', 'Total Accuracy'], loc='right')
+    plt.xlabel("Threshold for classifing to label 1")
+    plt.show()
+    return recalls, accuracy
