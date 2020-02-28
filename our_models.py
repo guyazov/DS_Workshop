@@ -179,7 +179,7 @@ def logreg_grid_search(logreg_model,X_train, y_train, X_test, y_test, scoring):
 
 
 
-def random_forest(X_train, Y_train, X_test, Y_test,threshold_flag=True):
+def random_forest(X_train, Y_train, X_test, Y_test,threshold_flag=True,n_estimators=16, max_depth=20):
     '''
     Description: random forest model
     :param threshold_flag: if true - find highest recall model with said
@@ -190,7 +190,7 @@ def random_forest(X_train, Y_train, X_test, Y_test,threshold_flag=True):
     :param y_test: ndarray of y_test
     :return: results of the random forest model.
     '''
-    rf = RandomForestClassifier(n_estimators=16, max_depth=20, random_state=0)
+    rf = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth, random_state=0)
     rf.fit(X_train, Y_train)
     predictions = rf.predict(X_test)
     predicted_proba = rf.predict_proba(X_test)
@@ -213,7 +213,7 @@ def knn_grid_search(X_train, y_model_train,X_test,y_test):
     test_reports = []
     for i in range(1,12):
         knn = KNeighborsClassifier(n_neighbors=i, metric='minkowski',p=2)
-        nn.fit(X_train, y_model_train)
+        knn.fit(X_train, y_model_train)
         training_reports.append(metrics.classification_report(y_model_train, knn.predict(X_train)))
         test_reports.append(metrics.classification_report(y_test, knn.predict(X_test)))
     return training_reports, test_reports
@@ -237,7 +237,7 @@ def find_best_thershold(X_test, Y_test,model_after_fit):
         predicted_test = (predicted_test_proba [:,1] >= threshold).astype('int')
         recall_performance = recall_score(Y_test, predicted_test, pos_label=0)
         acc_performance = accuracy_score(Y_test, predicted_test)
-        if recall_score_test_max < recall_performance  and acc_performance > 0.7:
+        if recall_score_test_max < recall_performance  and acc_performance > 0.6999999:
             recall_score_test_max = recall_performance
             threshold_test_max = threshold
             acc_score_test_max = acc_performance             

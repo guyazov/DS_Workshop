@@ -72,10 +72,12 @@ def data_normalization(semiNormal_parameters, nonNormal_parameters,X_train,X_tes
     '''
     sc = StandardScaler()
     mm = MinMaxScaler()
-    X_train[semiNormal_parameters] = sc.fit_transform(X_train[semiNormal_parameters])
-    X_train[nonNormal_parameters] = mm.fit_transform(X_train[nonNormal_parameters])
-    X_test[semiNormal_parameters] = sc.fit_transform(X_test[semiNormal_parameters])
-    X_test[nonNormal_parameters] = mm.fit_transform(X_test[nonNormal_parameters])
+    if len(semiNormal_parameters) > 0:
+        X_train[semiNormal_parameters] = sc.fit_transform(X_train[semiNormal_parameters])
+        X_test[semiNormal_parameters] = sc.fit_transform(X_test[semiNormal_parameters])
+    if len(nonNormal_parameters) > 0:
+        X_train[nonNormal_parameters] = mm.fit_transform(X_train[nonNormal_parameters])
+        X_test[nonNormal_parameters] = mm.fit_transform(X_test[nonNormal_parameters])
     return X_train, X_test
 
 
