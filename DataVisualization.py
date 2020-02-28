@@ -27,6 +27,7 @@ def analyze_shots_per_game(database):
     legend = plt.legend((' playoffs attempted', 'regular attempted', 'playoffs successful', 'regular successful'),
                         loc=6)
     ax1.add_artist(legend)
+    plt.savefig("img/shots_per_game.png")
     plt.show()
 
 def find_correlations(database):
@@ -35,11 +36,11 @@ def find_correlations(database):
     :param database: a pandas Dataframe.
     :return: Nothing.
     '''
-    plt.figure(figsize=(12, 10))
+    plt.figure(figsize=(22, 22))
     cor = database.corr()
     sns.heatmap(cor, annot=True, cmap=plt.cm.Reds)
+    plt.tight_layout()
     plt.show()
-    #plt.tight_layout()
 
 
 def plot_confusion(classifier, X_test, y_test, class_names):
@@ -155,7 +156,6 @@ def plot_throws_statistics(database):
     ax4.set_ylabel('Free Throws %')
     plt.tight_layout()
 
-
 def plot_distributions(database):
     '''
     Description: Plot parameters distributions.
@@ -191,14 +191,9 @@ def plot_general_info(database):
     :param database: a pandas Dataframe.
     :return: Nothing.
     '''
-    fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1, figsize=(8, 8))
-    database.groupby('Pos').agg({'FT%': 'mean'}).plot.bar(ax=ax2, width=0.1)
-    ax1.bar([1, 2], [database.groupby(["ShootingHand"])["player"].nunique()[0],
+    plt.bar([1, 2], [database.groupby(["ShootingHand"])["player"].nunique()[0],
                    database.groupby(["ShootingHand"])["player"].nunique()[1]], width=0.1,
             tick_label=['Right', 'Left'], label='ShootingHand')
-    ax1.set_xlim(0.5, 2.5)
-    ax1.legend(loc=2)
-    ax2.plot()
-    ax1.legend();
-
+    plt.legend(loc=2)
+    plt.show()
 
