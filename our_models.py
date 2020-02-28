@@ -201,6 +201,7 @@ def random_forest(X_train, Y_train, X_test, Y_test,threshold_flag=True):
     else:
         return metrics.classification_report(Y_test, predictions) , rf
 
+    
 def knn_grid_search(X_train, y_model_train,X_test,y_test):
     '''
     Description: performing grid search on the SVM model parameters.
@@ -229,14 +230,21 @@ def find_best_thershold(X_test, Y_test,model_after_fit):
 
     recall_score_test_max = 0
     threshold_test_max = 0
+    acc_score_test_max = 0                       
     thresholds = np.arange(0.6,1,0.01)
     for threshold in thresholds:
         predicted_test_proba = model_after_fit.predict_proba(X_test)
         predicted_test = (predicted_test_proba [:,1] >= threshold).astype('int')
-        if recall_score_test_max < recall_score(Y_test, predicted_test, pos_label=0) and accuracy_score(Y_test, predicted_test) > 0.7:
-            recall_score_test_max = recall_score(Y_test, predicted_test, pos_label=0)
+        recall_performance = recall_score(Y_test, predicted_test, pos_label=0)
+        acc_performance = accuracy_score(Y_test, predicted_test)
+        if recall_score_test_max < recall_performance  and acc_performance > 0.7:
+            recall_score_test_max = recall_performance
             threshold_test_max = threshold
-    #print("threshold test max:",threshold_test_max, "recall_test_max : ", recall_score_test_max)
+            acc_score_test_max = acc_performance             
+    print(f"Optimal threshold is: {threshold_test_max}")
+#     print("Model performance with this thr")
+#     print(f"Label 0 recall: {recall_score_test_max}")
+#     print(f"Accuracy: {acc_score_test_max}")
     return threshold_test_max
 
 def plot_as_func_threshold(X_test, Y_test,model_after_fit):

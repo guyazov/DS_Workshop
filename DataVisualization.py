@@ -39,7 +39,7 @@ def find_correlations(database):
     cor = database.corr()
     sns.heatmap(cor, annot=True, cmap=plt.cm.Reds)
     plt.show()
-    plt.tight_layout()
+    #plt.tight_layout()
 
 
 def plot_confusion(classifier, X_test, y_test, class_names):
