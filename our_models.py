@@ -9,7 +9,7 @@ from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_sc
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import metrics
 from sklearn.neighbors import KNeighborsClassifier
-
+from sklearn.metrics import precision_score, recall_score, roc_auc_score, roc_curve
 
 def logreg(X_train, Y_train,X_test, Y_test):
     '''
@@ -271,3 +271,70 @@ def plot_as_func_threshold(X_test, Y_test,model_after_fit):
     plt.xlabel("Threshold for classifing to label 1")
     plt.show()
     return recalls, accuracy
+
+def evaluate_model(model,X_train,y_model_train,X_test,y_test,rf_model_flag=False):
+    """Compare machine learning model to baseline performance.
+    Computes statistics and shows ROC curve."""
+    
+    if(rf_model_flag):
+        n_nodes = []
+        max_depths = []
+
+        # Stats about the trees in random forest
+        for ind_tree in model.estimators_:
+            n_nodes.append(ind_tree.tree_.node_count)
+            max_depths.append(ind_tree.tree_.max_depth)
+
+        print(f'Average number of nodes {int(np.mean(n_nodes))}')
+        print(f'Average maximum depth {int(np.mean(max_depths))}')
+
+    # Training predictions (to demonstrate overfitting)
+    train_predictions = model.predict(X_train.values)
+    train_probs = model.predict_proba(X_train.values)[:, 1]
+
+    # Testing predictions (to determine performance)
+    predictions = model.predict(X_test.values)
+    probs = model.predict_proba(X_test.values)[:, 1]
+
+
+
+    # Plot formatting
+    plt.style.use('fivethirtyeight')
+    plt.rcParams['font.size'] = 18
+    
+    baseline = {}
+    
+    baseline['recall'] = recall_score(y_test, 
+                                     [1 for _ in range(len(y_test))])
+    baseline['precision'] = precision_score(y_test, 
+                                      [1 for _ in range(len(y_test))])
+    baseline['roc'] = 0.5
+    
+    results = {}
+    
+    results['recall'] = recall_score(y_test, predictions)
+    results['precision'] = precision_score(y_test, predictions)
+    results['roc'] = roc_auc_score(y_test, probs)
+    
+    train_results = {}
+    train_results['recall'] = recall_score(y_model_train, train_predictions)
+    train_results['precision'] = precision_score(y_model_train, train_predictions)
+    train_results['roc'] = roc_auc_score(y_model_train, train_probs)
+    
+    for metric in ['recall', 'precision', 'roc']:
+        print(f'{metric.capitalize()} Baseline: {round(baseline[metric], 2)} Test: {round(results[metric], 2)} Train: {round(train_results[metric], 2)}')
+    
+    # Calculate false positive rates and true positive rates
+    base_fpr, base_tpr, _ = roc_curve(y_test, [1 for _ in range(len(y_test))])
+    model_fpr, model_tpr, _ = roc_curve(y_test, probs)
+
+    plt.figure(figsize = (8, 6))
+    plt.rcParams['font.size'] = 16
+    
+    # Plot both curves
+    plt.plot(base_fpr, base_tpr, 'b', label = 'baseline')
+    plt.plot(model_fpr, model_tpr, 'r', label = 'model')
+    plt.legend();
+    plt.xlabel('False Positive Rate'); 
+    plt.ylabel('True Positive Rate'); plt.title('ROC Curves');
+    plt.show();
