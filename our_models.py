@@ -265,11 +265,11 @@ def plot_as_func_threshold(X_test, Y_test,model_after_fit):
         recalls.append(recall_score(Y_test, predicted_test, pos_label=0))
         accuracy.append(accuracy_score(Y_test, predicted_test))
     
-    plt.plot(thresholds,recalls)
-    plt.plot(thresholds,accuracy)
-    plt.legend(['Label 0 recall', 'Total Accuracy'], loc='right')
-    plt.xlabel("Threshold for classifing to label 1")
-    plt.show()
+#     plt.plot(thresholds,recalls)
+#     plt.plot(thresholds,accuracy)
+#     plt.legend(['Label 0 recall', 'Total Accuracy'], loc='right')
+#     plt.xlabel("Threshold for classifing to label 1")
+#     plt.show()
     return recalls, accuracy
 
 def evaluate_model(model,X_train,y_model_train,X_test,y_test,rf_model_flag=False):
