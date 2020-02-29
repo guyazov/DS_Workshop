@@ -204,3 +204,11 @@ def plot_general_info(database):
     plt.legend(loc=2)
     plt.show()
 
+def plot_two_lines(x_axis,line_1,label_1,line_2,label_2,x_label=""):
+    plt.plot(x_axis,line_1)
+    plt.plot(x_axis,line_2)
+    plt.legend([label_1, label_2], loc='right')
+    plt.xlabel(x_label)
+    plt.grid(True)
+    plt.show()
+
