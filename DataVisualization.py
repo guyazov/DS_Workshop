@@ -30,7 +30,7 @@ def analyze_shots_per_game(database):
     plt.savefig("img/shots_per_game.png")
     plt.show()
 
-def find_correlations(database):
+def find_and_plot_correlations(database):
     '''
     Description: plot correlation heat map.
     :param database: a pandas Dataframe.
@@ -38,8 +38,15 @@ def find_correlations(database):
     '''
     plt.figure(figsize=(22, 22))
     cor = database.corr()
-    sns.heatmap(cor, annot=True, cmap=plt.cm.Reds)
+    
+    ax = sns.heatmap(cor, annot=True,fmt='.2f', cmap=plt.cm.Reds,annot_kws={"fontsize":28})
+    bottom, top = ax.get_ylim()
+    ax.set_ylim(bottom + 0.5, top - 0.5)
     plt.tight_layout()
+    ax.set_xticklabels(ax.get_xmajorticklabels(), fontsize = 30)
+    ax.set_yticklabels(ax.get_ymajorticklabels(), fontsize = 30)
+    plt.yticks(rotation=0) 
+    plt.xticks(rotation=90) 
     plt.show()
 
 

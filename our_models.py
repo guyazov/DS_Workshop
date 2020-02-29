@@ -299,7 +299,7 @@ def evaluate_model(model,X_train,y_model_train,X_test,y_test,rf_model_flag=False
 
 
     # Plot formatting
-    plt.style.use('fivethirtyeight')
+    #plt.style.use('fivethirtyeight')
     plt.rcParams['font.size'] = 18
     
     baseline = {}
@@ -337,4 +337,5 @@ def evaluate_model(model,X_train,y_model_train,X_test,y_test,rf_model_flag=False
     plt.legend();
     plt.xlabel('False Positive Rate'); 
     plt.ylabel('True Positive Rate'); plt.title('ROC Curves');
+    plt.grid(True)
     plt.show();
