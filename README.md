@@ -9,4 +9,6 @@ As we will explain later, we found out that since a free throw its a statistical
 
 In addition, since our data was collected from pro NBA players performances, it consisted of 76% made shots, caused our data set to be an imbalance one. 
 
-As a result all of our primary modelstend to label all shots as scores. Therefore, our point offocus in this work was dealing with that phenomenon and try increasing the recall parameter on the missed shots.
+As a result all of our primary models tend to label all shots as scores. Therefore, our point offocus in this work was dealing with that phenomenon and try increasing the recall parameter on the missed shots.
+
+For see our data science pipeline on this project you can run our notebook: Project.ipynb
